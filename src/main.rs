@@ -15,6 +15,7 @@ struct Opts {
     port: u16,
 }
 
+#[allow(dead_code)]
 enum LogLevel {
     DEBUG,
     INFO,
