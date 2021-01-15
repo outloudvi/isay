@@ -1,0 +1,24 @@
+[package]
+authors = ["Outvi V <oss+crates@outv.im>"]
+categories = ["command-line-utilities"]
+description = "Drop desktop notifications through HTTP API"
+edition = "2018"
+keywords = [
+  "linux",
+  "notify",
+  "notification",
+  "desktop",
+  "macos",
+]
+license = "MIT"
+name = "isay"
+repository = "https://github.com/outloudvi/isay"
+version = "0.1.0"
+
+[dependencies]
+clap = "3.0.0-beta.2"
+lazy_static = "1.4.0"
+notify-rust = "4.2.2"
+termcolor = "1.1.2"
+tokio = {version = "0.2", features = ["full"]}
+warp = "0.2.5"
