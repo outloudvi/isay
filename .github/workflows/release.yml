@@ -46,11 +46,12 @@ jobs:
           rustup update ${{ matrix.rust }} --no-self-update
           rustup default ${{ matrix.rust }}
 
-      - name: Install musl-tools (Linux)
+      - name: Install dependencies
         if: matrix.build == 'linux'
         run: |
           sudo apt-get update -y
           sudo apt-get install musl-tools -y
+          sudo apt-get install --no-install-recommends -y libdbus-1-dev dbus at-spi2-core
 
       - name: Install p7zip (MacOS)
         if: matrix.build == 'macos'
