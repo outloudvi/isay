@@ -1,4 +1,4 @@
-use clap::Clap;
+use clap::{crate_version, Clap};
 use lazy_static::lazy_static;
 use notify_rust::Notification;
 use std::{
@@ -9,7 +9,7 @@ use termcolor::{BufferWriter, Color, ColorChoice, ColorSpec, WriteColor};
 use warp::{http::Response, Filter};
 
 #[derive(Clap)]
-#[clap(version = "0.1.0")]
+#[clap(version = crate_version!())]
 struct Opts {
     #[clap(short, long, default_value = "4829")]
     port: u16,
