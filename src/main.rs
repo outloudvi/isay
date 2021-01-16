@@ -8,11 +8,20 @@ use std::{
 use termcolor::{BufferWriter, Color, ColorChoice, ColorSpec, WriteColor};
 use warp::{http::Response, Filter};
 
-#[derive(Clap)]
+#[derive(Clap, Clone)]
 #[clap(version = crate_version!())]
 struct Opts {
     #[clap(short, long, default_value = "4829", about = "HTTP port to listen on")]
     port: u16,
+    #[clap(
+        short,
+        long,
+        default_value = "-1",
+        about = "Timeout for the notification. Set it to 0 makes the notification never disappear."
+    )]
+    timeout: i32,
+    #[clap(long, about = "App name for the notification")]
+    app_name: String,
 }
 
 #[allow(dead_code)]
@@ -60,12 +69,23 @@ fn log(level: LogLevel, message: String) {
     write_log(level, message).unwrap();
 }
 
-fn send_message(msg: &String) {
-    Notification::new()
-        .summary("I Say")
-        .body(msg)
-        .show()
-        .unwrap();
+fn send_message(msg: &String, opts: &Opts) {
+    let mut notif = Notification::new();
+
+    let lines: Vec<&str> = msg.split('\n').collect();
+    if lines.len() > 1 {
+        notif
+            .summary(lines[0])
+            .body(&lines.into_iter().skip(1).collect::<Vec<&str>>().join("\n"));
+    } else {
+        notif.summary(msg);
+    }
+
+    notif.timeout(opts.timeout);
+    if !opts.app_name.is_empty() {
+        notif.appname(&opts.app_name);
+    }
+    notif.show().unwrap();
 }
 
 #[tokio::main]
@@ -76,9 +96,9 @@ async fn main() {
 
     let hello = warp::any()
         .and(warp::query::<HashMap<String, String>>())
-        .map(|p: HashMap<String, String>| match p.get("q") {
+        .map(move |p: HashMap<String, String>| match p.get("q") {
             Some(s) => {
-                send_message(s);
+                send_message(s, &opts);
                 Response::builder().body("good")
             }
             None => Response::builder().status(400).body("bad"),
