@@ -11,7 +11,7 @@ use warp::{http::Response, Filter};
 #[derive(Clap)]
 #[clap(version = crate_version!())]
 struct Opts {
-    #[clap(short, long, default_value = "4829")]
+    #[clap(short, long, default_value = "4829", about = "HTTP port to listen on")]
     port: u16,
 }
 
